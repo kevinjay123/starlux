@@ -1,0 +1,7 @@
+* {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+}
+input[type="text"], textarea {
+  border: 1px solid #ddd;
+}
