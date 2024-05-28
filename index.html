@@ -7,37 +7,37 @@
 <script src="js/tailwind-3.4.0.min.js"></script>
 <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-gray-200 flex container items-center mx-auto justify-center">
-  <div class="w-full bg-white p-6 rounded shadow-md">
-    <h2 class="text-2xl font-bold mb-4 text-center">Starlux</h2>
+<body class="bg-gray-900 flex container items-center mx-auto justify-center">
+  <div class="w-full bg-gray-800 p-6 rounded shadow-md">
+    <h2 class="text-2xl font-bold mb-4 text-center text-white">Starlux</h2>
     <div class="space-y-4">
       <div class="flex items-center justify-between">
-        <label for="inputMonth" class="text-sm font-medium text-gray-700">Select yyyy-MM:</label>
-        <input type="month" id="inputMonth" class="border border-gray-300 rounded p-1" value="2024-10">
+        <label for="inputMonth" class="text-sm font-medium text-gray-300">Select yyyy-MM:</label>
+        <input type="month" id="inputMonth" class="border border-gray-700 rounded p-1" value="2024-10">
       </div>
       <div class="flex items-center justify-between">
-        <label for="selectAirportFrom" class="text-sm font-medium text-gray-700">Airport from:</label>
-        <select id="selectAirportFrom" class="border border-gray-300 rounded p-1"></select>
+        <label for="selectAirportFrom" class="text-sm font-medium text-gray-300">Airport from:</label>
+        <select id="selectAirportFrom" class="border border-gray-700 rounded p-1"></select>
       </div>
       <div class="flex items-center justify-between">
-        <label for="selectAirportTo" class="text-sm font-medium text-gray-700">Airport to:</label>
-        <select id="selectAirportTo" class="border border-gray-300 rounded p-1"></select>
+        <label for="selectAirportTo" class="text-sm font-medium text-gray-300">Airport to:</label>
+        <select id="selectAirportTo" class="border border-gray-700 rounded p-1"></select>
       </div>
       <div class="flex items-center justify-between">
-        <label for="btnSearch" class="text-sm font-medium text-gray-700">Search the price for all months:</label>
+        <label for="btnSearch" class="text-sm font-medium text-gray-300">Search the price for all months:</label>
         <button id="btnSearch" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
       </div>
     </div>
     <div class="mt-6 space-y-4">
       <div class="flex items-center justify-between">
         <button id="btnMonthPrev" class="bg-blue-500 text-white px-4 py-2 rounded">Prev</button>
-        <div class="text-lg font-medium text-gray-700">
+        <div class="text-lg font-medium text-gray-300">
           <span id="spanMonth">2024-10</span>
         </div>
         <button id="btnMonthNext" class="bg-blue-500 text-white px-4 py-2 rounded">Next</button>
       </div>
       <div id="containerMonthPrice" class="grid grid-cols-7 gap-4"></div>
-      <div id="containerStatistics" class="p-4 bg-gray-100 rounded shadow-md"></div>
+      <div id="containerStatistics" class="p-4 bg-gray-700 rounded shadow-md"></div>
     </div>
     <div class="mt-4 text-center">
       <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank" class="text-blue-500 underline">https://cors-anywhere.herokuapp.com/corsdemo</a>

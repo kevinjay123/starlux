@@ -42,7 +42,8 @@ function updateInputMonthValue(offset) {
   const [year, month] = inputMonthValue.split('-');
   const date = new Date(year, month - 1, 1);
   date.setMonth(date.getMonth() + offset);
-  inputMonth.value = `${date.getFullYear()}-${date.getMonth() + 1}`.padEnd(7, '-');
+  const paddedMonth = (date.getMonth() + 1).toString().padStart(2, '0');
+  inputMonth.value = `${date.getFullYear()}-${paddedMonth}`.padEnd(7, '-');
 
   spanMonth.textContent = inputMonth.value;
 
@@ -110,7 +111,6 @@ function searchFlight(departure, arrival, departureDate) {
 
 function renderFlightInfo(data) {
   const calendars = data.data.calendars;
-  const daysInWeek = 7;
 
   // 生成空的日期格子
   let daysArray = Array(42).fill(null);  // 6週 * 7天 = 42個格子
@@ -136,21 +136,21 @@ function renderFlightInfo(data) {
 
   // 清空並重新生成行事曆
   containerMonthPrice.innerHTML = `
-    <div class="text-center font-bold">日</div>
-    <div class="text-center font-bold">一</div>
-    <div class="text-center font-bold">二</div>
-    <div class="text-center font-bold">三</div>
-    <div class="text-center font-bold">四</div>
-    <div class="text-center font-bold">五</div>
-    <div class="text-center font-bold">六</div>
+    <div class="text-center font-bold text-white">日</div>
+    <div class="text-center font-bold text-white">一</div>
+    <div class="text-center font-bold text-white">二</div>
+    <div class="text-center font-bold text-white">三</div>
+    <div class="text-center font-bold text-white">四</div>
+    <div class="text-center font-bold text-white">五</div>
+    <div class="text-center font-bold text-white">六</div>
   `;
 
   daysArray.forEach((calendar, index) => {
     const div = document.createElement('div');
-    div.classList.add('border', 'p-2', 'h-24', 'flex', 'flex-col', 'justify-center', 'items-center', 'bg-white', 'shadow');
+    div.classList.add('border', 'p-2', 'h-24', 'flex', 'flex-col', 'justify-center', 'items-center', 'bg-gray-900', 'text-white', 'shadow');
 
     if (calendar) {
-      const priceColor = calendar.price.amount <= minPrice ? 'text-green-500' : calendar.price.amount >= maxPrice ? 'text-red-500' : 'text-gray-800';
+      const priceColor = calendar.price.amount <= minPrice ? 'text-green-500' : calendar.price.amount >= maxPrice ? 'text-red-500' : 'text-gray-300';
       div.innerHTML = `
         <div class="text-sm text-gray-500">${calendar.departureDate}</div>
         <div class="text-lg font-bold ${priceColor}">${calendar.price.amount} ${calendar.price.currencyCode}</div>
@@ -174,7 +174,7 @@ function renderFlightInfo(data) {
     </div>
     <div class="flex justify-between items-center mb-2">
       <div class="text-gray-500">Avg Price</div>
-      <div class="text-gray-800">${avgPrice}</div>
+      <div class="text-gray-300">${avgPrice}</div>
     </div>
   `;
 }
