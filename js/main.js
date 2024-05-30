@@ -105,6 +105,12 @@ function searchFlight(departure, arrival, departureDate) {
     })
     .catch(error => {
       console.error('無法取得航班資訊:', error);
+      console.log(error);
+
+      // 若是 https://cors-anywhere.herokuapp.com/corsdemo 錯誤，提示需要到 https://cors-anywhere.herokuapp.com/corsdemo 啟用
+      if (error.message.includes('See /cors')) {
+        logError('請到 https://cors-anywhere.herokuapp.com/corsdemo 啟用 CORS');
+      }
     });
 }
 
@@ -132,7 +138,7 @@ function renderFlightInfo(data) {
 
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
-  const avgPrice = (prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2);
+  const avgPrice = (prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(0);
 
   // 清空並重新生成行事曆
   containerMonthPrice.innerHTML = `
@@ -147,13 +153,19 @@ function renderFlightInfo(data) {
 
   daysArray.forEach((calendar, index) => {
     const div = document.createElement('div');
-    div.classList.add('border', 'p-2', 'h-24', 'flex', 'flex-col', 'justify-center', 'items-center', 'bg-gray-900', 'text-white', 'shadow');
+    div.classList.add('border', 'border-gray-600', 'p-2', 'h-24', 'flex', 'flex-col', 'justify-center', 'items-center', 'bg-gray-900', 'text-white', 'shadow', 'rounded');
 
     if (calendar) {
-      const priceColor = calendar.price.amount <= minPrice ? 'text-green-500' : calendar.price.amount >= maxPrice ? 'text-red-500' : 'text-gray-300';
+      const priceColor = calendar.price.amount <= minPrice ? 'text-green-500' : calendar.price.amount >= maxPrice ? 'text-red-400' : 'text-gray-300';
+      (calendar.price.amount <= minPrice) && div.classList.add('fire');
       div.innerHTML = `
-        <div class="text-sm text-gray-500">${calendar.departureDate}</div>
-        <div class="text-lg font-bold ${priceColor}">${calendar.price.amount} ${calendar.price.currencyCode}</div>
+        <div class="text-sm text-gray-300">${calendar.departureDate}</div>
+        <div class="flex items-end">
+          <div class="text-3xl font-bold leading-6 ${priceColor}">
+            ${calendar.price.amount}
+          </div>
+          <div class="text-sm">${calendar.price.currencyCode}</div>
+        </div>
         <div class="text-sm ${calendar.status === 'available' ? 'text-green-500' : 'text-red-500'}">${calendar.status}</div>
       `;
     }
@@ -163,18 +175,28 @@ function renderFlightInfo(data) {
 
   // 更新統計資訊
   containerStatistics.innerHTML = `
-    <h2 class="text-xl font-bold mb-2">Overview</h2>
-    <div class="flex justify-between items-center mb-2">
-      <div class="text-gray-500">Min Price</div>
-      <div class="text-green-500">${minPrice}</div>
+  <div class="p-4 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold mb-4 text-white">Overview</h2>
+    <div class="flex">
+      <div class="w-full flex flex-col items-center">
+        <div class="text-gray-400">Min Price</div>
+        <div class="text-green-400 font-semibold text-3xl">${minPrice}</div>
+      </div>
+      <div class="w-full flex flex-col items-center">
+        <div class="text-gray-400">Max Price</div>
+        <div class="text-red-400 font-semibold text-3xl">${maxPrice}</div>
+      </div>
+      <div class="w-full flex flex-col items-center">
+        <div class="text-gray-400">Avg Price</div>
+        <div class="text-gray-400 font-semibold text-3xl">${avgPrice}</div>
+      </div>
     </div>
-    <div class="flex justify-between items-center mb-2">
-      <div class="text-gray-500">Max Price</div>
-      <div class="text-red-500">${maxPrice}</div>
-    </div>
-    <div class="flex justify-between items-center mb-2">
-      <div class="text-gray-500">Avg Price</div>
-      <div class="text-gray-300">${avgPrice}</div>
-    </div>
-  `;
+  </div>
+`;
+
 }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  // renderFlightInfo(monthly);
+});
