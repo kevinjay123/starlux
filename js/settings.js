@@ -15,6 +15,13 @@ const airports = [
   },
   {
     "region":"Hong Kong / Macau Area",
+    "location":"Hong Kong, Hong Kong",
+    "name":"Hong Kong International Airport",
+    "code":"HKG",
+    "disabled": false
+  },
+  {
+    "region":"Hong Kong / Macau Area",
     "location":"Macau, Macao",
     "name":"Macau International Airport",
     "code":"MFM",

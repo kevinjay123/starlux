@@ -3,52 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Starlux Flight Price Search</title>
+<title>STARLUX Flight Price Search</title>
 <script src="js/tailwind-3.4.0.min.js"></script>
+<script src="js/tailwind.custom.js"></script>
 <link rel="stylesheet" href="css/global.css"/>
 <link rel="stylesheet" href="css/custom.css"/>
 </head>
-<body class="bg-gray-900 flex container items-center mx-auto justify-center">
-  <div class="w-full bg-gray-800 p-6 rounded shadow-md">
-    <h2 class="text-2xl font-bold mb-4 text-center text-white">Starlux Flight Price Search</h2>
+<body class="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
+  <main class="w-full max-w-5xl bg-gray-800 p-6 rounded shadow-md">
+    <h2 class="text-2xl font-bold mb-4 text-center text-white">STARLUX Flight Price Search</h2>
     <div class="space-y-4">
-      <div class="flex items-center justify-between">
-        <label for="inputMonth" class="text-sm font-medium text-gray-300">Select yyyy-MM:</label>
-        <input type="month" id="inputMonth" class="bg-gray-900 border border-gray-700 rounded p-1" value="2024-10">
+      <div class="flex flex-col sm:flex-row items-center justify-between">
+        <label for="inputMonth" class="w-full text-sm font-medium text-gray-300">Select yyyy-MM:</label>
+        <input type="month" id="inputMonth" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-2 sm:mt-0 sm:ml-2" value="2024-10">
       </div>
-      <div class="flex items-center justify-between">
-        <label for="selectAirportFrom" class="text-sm font-medium text-gray-300">Airport from:</label>
-        <select id="selectAirportFrom" class="bg-gray-900 border border-gray-700 rounded p-1"></select>
+      <div class="flex flex-col sm:flex-row items-center justify-between">
+        <label for="selectAirportFrom" class="w-full text-sm font-medium text-gray-300">Airport from:</label>
+        <select id="selectAirportFrom" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-2 sm:mt-0 sm:ml-2"></select>
       </div>
-      <div class="flex items-center justify-between">
-        <label for="selectAirportTo" class="text-sm font-medium text-gray-300">Airport to:</label>
-        <select id="selectAirportTo" class="bg-gray-900 border border-gray-700 rounded p-1"></select>
+      <div class="flex flex-col sm:flex-row items-center justify-between">
+        <label for="selectAirportTo" class="w-full text-sm font-medium text-gray-300">Airport to:</label>
+        <select id="selectAirportTo" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-2 sm:mt-0 sm:ml-2"></select>
       </div>
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col sm:flex-row items-center justify-between">
         <label for="btnSearch" class="text-sm font-medium text-gray-300">Search the price for all months:</label>
-        <button id="btnSearch" class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
+        <button id="btnSearch" class="bg-secondary text-white px-4 py-2 rounded mt-2 sm:mt-0 sm:ml-2">Search</button>
       </div>
     </div>
-    <div class="mt-6 space-y-4">
+    <div id="containerResult" class="mt-6 space-y-4 hidden">
       <div class="flex items-center justify-between">
-        <button id="btnMonthPrev" class="bg-blue-500 text-white px-4 py-2 rounded">Prev</button>
+        <button id="btnMonthPrev" class="bg-secondary text-white px-4 py-2 rounded">Prev</button>
         <div class="text-lg font-medium text-gray-300">
           <span id="spanMonth">2024-10</span>
         </div>
-        <button id="btnMonthNext" class="bg-blue-500 text-white px-4 py-2 rounded">Next</button>
+        <button id="btnMonthNext" class="bg-secondary text-white px-4 py-2 rounded">Next</button>
       </div>
-      <div id="containerMonthPrice" class="grid grid-cols-7 gap-4"></div>
+      <div id="containerMonthPrice" class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
       <div id="containerStatistics" class="bg-gray-900 rounded shadow-md"></div>
+      <div id="loaderContainer" class="flex justify-center items-center mt-4 hidden">
+        <div class="border-8 border-l-8 border-l-primary rounded-full w-16 h-16 animate-spin"></div>
+      </div>
     </div>
-    <div class="mt-4 text-center">
+  </main>
+  <footer class="text-center text-gray-400 mt-4">
+    <div class="text-gray-400">
       Demo by <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank" class="text-blue-500 underline">https://cors-anywhere.herokuapp.com/corsdemo</a>
     </div>
-    <div>
-      Disclaimer:
-All information on this website is sourced from <a href="https://www.starlux-airlines.com/" target="_blank">STARLUX Airlines Co. Ltd</a>. <a href="https://www.starlux-airlines.com/" target="_blank">STARLUX Airlines Co. Ltd</a> retains all rights to the content.
+    <div class="text-gray-400">
+      All information on this website is sourced from <a href="https://www.STARLUX-airlines.com/" target="_blank" class="text-blue-500 underline">STARLUX Airlines Co. Ltd</a>. <a href="https://www.STARLUX-airlines.com/" target="_blank" class="text-blue-500 underline">STARLUX Airlines Co. Ltd</a> retains all rights to the content.
     </div>
-  </div>
-
+  </footer>
 </body>
 <script src="js/settings.js"></script>
 <script src="js/tailwindAlert.js"></script>

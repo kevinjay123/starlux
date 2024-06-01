@@ -9,3 +9,15 @@ input[type="text"], textarea {
 a {
   color: #f9c78b !important;
 }
+.highlight{
+  position: relative;
+}
+.highlight:before{
+  content: "";
+  position: absolute;
+  height: 0.7em;
+  top: 0.6em;
+  background: #f9c78b;
+  width: 100%;
+  opacity: 0.55;
+}
