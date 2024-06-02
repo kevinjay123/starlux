@@ -10,27 +10,41 @@ const containerMonthPrice = document.getElementById('containerMonthPrice');
 const containerStatistics = document.getElementById('containerStatistics');
 const loaderContainer = document.getElementById('loaderContainer');
 
-// 假設 airports 是從 settings.js 中取得的資料
-airports.forEach(airport => {
-  const option = document.createElement('option');
-  option.value = airport.code;
-  option.text = `${airport.name} (${airport.code})`;
-  selectAirportFrom.appendChild(option);
-  const option2 = document.createElement('option');
-  option2.value = airport.code;
-  option2.text = `${airport.name} (${airport.code})`;
-  selectAirportTo.appendChild(option2);
-});
+function appendAirport(){
+  const options = airports.map(airport => {
+    return {
+      value: airport.code,
+      label: airport.name,
+      sublabel: `${airport.location}, ${airport.region}`,
+      badge: `${airport.code}`
+    };
+  });
 
-// 設置 selectAirportFrom 默認值
-selectAirportFrom.value = 'TPE';
-// 設置 selectAirportTo 默認值
-selectAirportTo.value = 'OKA';
+  TailwindHeadless.appendDropdown(selectAirportFrom, {
+    options: options,
+    darkMode: true,
+    multiple: false,
+    preselected: ['TPE'],
+    onChange: (value) => {
+      console.log('Selected value:', value);
+    }
+  });
+
+  TailwindHeadless.appendDropdown(selectAirportTo, {
+    options: options,
+    darkMode: true,
+    multiple: false,
+    preselected: ['KMJ'],
+    onChange: (value) => {
+      console.log('Selected value:', value);
+    }
+  });
+}
 
 btnSearch.addEventListener('click', () => {
-  const departure = selectAirportFrom.value;
-  const arrival = selectAirportTo.value;
   const inputMonthValue = inputMonth.value;
+  const departure = selectAirportFrom.getAttribute('data-selected-value');
+  const arrival = selectAirportTo.getAttribute('data-selected-value');
   const departureDate = formatMonthDate(inputMonthValue); // 轉換為 yyyy-MM-dd 格式
 
   spanMonth.textContent = inputMonthValue;
@@ -41,6 +55,8 @@ btnSearch.addEventListener('click', () => {
 
 function updateInputMonthValue(offset) {
   const inputMonthValue = inputMonth.value;
+  const departure = selectAirportFrom.getAttribute('data-selected-value');
+  const arrival = selectAirportTo.getAttribute('data-selected-value');
   const [year, month] = inputMonthValue.split('-');
   const date = new Date(year, month - 1, 1);
   date.setMonth(date.getMonth() + offset);
@@ -49,7 +65,7 @@ function updateInputMonthValue(offset) {
 
   spanMonth.textContent = inputMonth.value;
 
-  searchFlight(selectAirportFrom.value, selectAirportTo.value, formatMonthDate(inputMonth.value));
+  searchFlight(departure, arrival, formatMonthDate(inputMonth.value));
 }
 
 btnMonthPrev.addEventListener('click', () => {
@@ -101,8 +117,8 @@ function searchFlight(departure, arrival, departureDate) {
   console.log('data', data);
 
   // 清空行事曆並顯示 loading 動畫
-  containerMonthPrice.innerHTML = '';
-  containerStatistics.innerHTML = '';
+  // containerMonthPrice.innerHTML = '';
+  // containerStatistics.innerHTML = '';
   showLoader();
   containerResult.classList.remove('hidden');
 
@@ -160,13 +176,13 @@ function renderFlightInfo(data) {
 
   // 清空並重新生成行事曆
   containerMonthPrice.innerHTML = `
-    <div class="text-center font-bold text-white hidden lg:block">Sun</div>
+    <div class="text-center font-bold text-white opacity-50 hidden lg:block">Sun</div>
     <div class="text-center font-bold text-white hidden lg:block">Mon</div>
     <div class="text-center font-bold text-white hidden lg:block">Tue</div>
     <div class="text-center font-bold text-white hidden lg:block">Wed</div>
     <div class="text-center font-bold text-white hidden lg:block">Thu</div>
     <div class="text-center font-bold text-white hidden lg:block">Fri</div>
-    <div class="text-center font-bold text-white hidden lg:block">Sat</div>
+    <div class="text-center font-bold text-white opacity-50 hidden lg:block">Sat</div>
   `;
 
   daysArray.forEach((calendar, index) => {
@@ -186,7 +202,7 @@ function renderFlightInfo(data) {
       (lowPrice) && div.classList.add('fire', 'border-primary', 'border-2', 'border-l-8');
       (!available) && div.classList.add('opacity-50');
       div.innerHTML = `
-        <div class="absolute top-0 right-0 p-2">
+        <div class="absolute top-0 right-0 p-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 fill-primary ${lowPrice ? 'block' : 'hidden'}">
             <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
           </svg>
@@ -232,5 +248,6 @@ function renderFlightInfo(data) {
 
 // 添加事件監聽器
 document.addEventListener("DOMContentLoaded", function() {
-  // renderFlightInfo(monthly);
+  appendAirport();
+  // renderFlightInfo(monthly); // for testing
 });

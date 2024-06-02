@@ -10,27 +10,27 @@
 <link rel="stylesheet" href="css/custom.css"/>
 </head>
 <body class="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
-  <main class="w-full max-w-5xl bg-gray-800 p-6 rounded shadow-md">
-    <h2 class="text-2xl font-bold mb-4 text-center text-white">STARLUX Flight Price Search</h2>
-    <div class="space-y-4">
+  <main class="w-full max-w-5xl bg-gray-800 p-6 rounded shadow-md flex flex-col gap-2">
+    <h2 class="text-2xl font-bold text-center text-white">STARLUX Flight Price Search</h2>
+    <div class="flex flex-col gap-2">
       <div class="flex flex-col sm:flex-row items-center justify-between">
         <label for="inputMonth" class="w-full text-sm font-medium text-gray-300">Select yyyy-MM:</label>
         <input type="month" id="inputMonth" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-2 sm:mt-0 sm:ml-2" value="2024-10">
       </div>
       <div class="flex flex-col sm:flex-row items-center justify-between">
         <label for="selectAirportFrom" class="w-full text-sm font-medium text-gray-300">Airport from:</label>
-        <select id="selectAirportFrom" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-2 sm:mt-0 sm:ml-2"></select>
+        <div id="selectAirportFrom" class="w-full"></div>
       </div>
       <div class="flex flex-col sm:flex-row items-center justify-between">
         <label for="selectAirportTo" class="w-full text-sm font-medium text-gray-300">Airport to:</label>
-        <select id="selectAirportTo" class="w-full bg-gray-900 border border-gray-700 rounded p-2 mt-2 sm:mt-0 sm:ml-2"></select>
+        <div id="selectAirportTo" class="w-full"></div>
       </div>
       <div class="flex flex-col sm:flex-row items-center justify-between">
-        <label for="btnSearch" class="text-sm font-medium text-gray-300">Search the price for all months:</label>
+        <label class="text-sm font-medium text-gray-300">Search the price for all months:</label>
         <button id="btnSearch" class="bg-secondary text-white px-4 py-2 rounded mt-2 sm:mt-0 sm:ml-2">Search</button>
       </div>
     </div>
-    <div id="containerResult" class="mt-6 space-y-4 hidden">
+    <div id="containerResult" class="relative flex flex-col gap-2 min-h-96 hidden">
       <div class="flex items-center justify-between">
         <button id="btnMonthPrev" class="bg-secondary text-white px-4 py-2 rounded">Prev</button>
         <div class="text-lg font-medium text-gray-300">
@@ -40,7 +40,7 @@
       </div>
       <div id="containerMonthPrice" class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"></div>
       <div id="containerStatistics" class="bg-gray-900 rounded shadow-md"></div>
-      <div id="loaderContainer" class="flex justify-center items-center mt-4 hidden">
+      <div id="loaderContainer" class="hidden absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
         <div class="border-8 border-l-8 border-l-primary rounded-full w-16 h-16 animate-spin"></div>
       </div>
     </div>
@@ -55,7 +55,8 @@
   </footer>
 </body>
 <script src="js/settings.js"></script>
-<script src="js/tailwindAlert.js"></script>
+<script src="js/tailwind.alert.js"></script>
+<script src="js/tailwind.headless.js"></script>
 <script src="js/data.test.js"></script>
 <script src="js/main.js"></script>
 </html>
