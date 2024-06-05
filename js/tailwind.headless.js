@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const dropdown = document.createElement('div');
     dropdown.className = `
-      absolute w-full mt-1 rounded shadow-lg z-10 max-h-96 overflow-y-auto
+      absolute w-full mt-1 rounded shadow-lg z-10 max-h-96 overflow-y-auto border border-gray-700
       ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}
     `;
     dropdown.style.display = 'none';

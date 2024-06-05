@@ -79,7 +79,8 @@ btnMonthNext.addEventListener('click', () => {
 function formatMonthDate(monthValue) {
   // 使用 Date 物件來處理日期
   const [year, month] = monthValue.split('-');
-  const date = new Date(year, month - 1, 1); // 將日期設為當月的第一天
+  const date = new Date(year, month - 1, 1); // 將日期設為下個月的第一天
+  date.setDate(date.getDate() + 1); // 將日期減去一天，獲得當月的最後一天
   return date.toISOString().split('T')[0]; // 返回 yyyy-MM-dd 格式
 }
 
