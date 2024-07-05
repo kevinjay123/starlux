@@ -168,7 +168,7 @@ function renderFlightInfo(data) {
     const index = offset + dayOfMonth - 1;
 
     daysArray[index] = calendar;
-    prices.push(calendar.price.amount);
+    if(calendar?.price?.amount) prices.push(calendar.price.amount);
   });
 
   const minPrice = Math.min(...prices);
@@ -195,9 +195,9 @@ function renderFlightInfo(data) {
       const dayOfMonth = date.getDate();
       const dayOfWeek = date.getDay();
       const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      const lowPrice = calendar.price.amount <= minPrice;
+      const lowPrice = calendar?.price?.amount <= minPrice;
       const available = calendar.status === 'available';
-      const priceColor = lowPrice ? 'text-green-500 font-bold ' : calendar.price.amount >= maxPrice ? 'text-red-400' : 'text-gray-300';
+      const priceColor = lowPrice ? 'text-green-500 font-bold ' : calendar?.price?.amount >= maxPrice ? 'text-red-400' : 'text-gray-300';
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // Check if it's Saturday or Sunday
       (lowPrice) && div.classList.remove('border-gray-600');
       (lowPrice) && div.classList.add('fire', 'border-primary', 'border-2', 'border-l-8');
@@ -211,10 +211,14 @@ function renderFlightInfo(data) {
         <div class="text-3xl text-gray-200 ${isWeekend ? 'opacity-50' : ''}">${dayOfMonth}</div>
         <div class="block lg:hidden text-sm text-gray-400">(${dayNames[dayOfWeek]})</div>
         <div class="flex items-end">
-          <div class="text-lg leading-6 ${priceColor}">
-            ${calendar.price.amount}
-          </div>
-          <div class="text-sm text-gray-500">${calendar.price.currencyCode}</div>
+          ${
+            (available) ? 
+            `<div class="text-lg leading-6 ${priceColor}">
+              ${calendar?.price?.amount}
+            </div>
+            <div class="text-sm text-gray-500">${calendar?.price?.currencyCode}</div>`
+            : `<div class="text-base leading-6 text-gray-500">Unavailable</div>`
+          }
         </div>
       `;
     } else {
