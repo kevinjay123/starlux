@@ -15,46 +15,60 @@
     return badge;
   }
 
-  function createOptionContent(option, darkMode) {
+  function createOptionContent(option, darkMode, highlightText = '') {
     const container = document.createElement('div');
     container.className = 'flex flex-col items-start text-left';
 
     const label = document.createElement('span');
-    label.textContent = option.label;
+    label.className = 'option-label';
+    label.innerHTML = highlightText ? highlightKeywords(option.label, highlightText) : option.label;
     container.appendChild(label);
 
     if (option.sublabel) {
       const sublabel = document.createElement('span');
-      sublabel.className = 'text-sm text-gray-500';
-      sublabel.textContent = option.sublabel;
+      sublabel.className = 'text-sm text-gray-500 option-sublabel';
+      sublabel.innerHTML = highlightText ? highlightKeywords(option.sublabel, highlightText) : option.sublabel;
       container.appendChild(sublabel);
     }
 
     return container;
   }
 
+  function highlightKeywords(text, keyword) {
+    const regex = new RegExp(`(${keyword})`, 'gi');
+    return text.replace(regex, '<span class="bg-primary text-gray-800">$1</span>');
+  }
+
   function updateButtonContent(button, option, darkMode) {
     button.innerHTML = '';
-
+  
     const contentDiv = document.createElement('div');
     contentDiv.className = 'flex flex-col items-start text-left';
     const content = createOptionContent(option, darkMode);
     contentDiv.appendChild(content);
-
+  
     const rightContainer = document.createElement('div');
     rightContainer.className = 'flex items-center';
-
+  
     if (option.badge) {
       const badge = createBadge(option.badge, darkMode);
       rightContainer.appendChild(badge);
     }
     rightContainer.innerHTML += arrowIcon;
-
+  
     button.appendChild(contentDiv);
     button.appendChild(rightContainer);
   }
 
-  function createDropdown({ options, darkMode = false, multiple = false, preselected = null, onChange = null, target }) {
+  function createDropdown({
+    options,
+    darkMode = false,
+    multiple = false,
+    preselected = null,
+    onChange = null,
+    target,
+    enableSearch = false
+  }) {
     const container = document.createElement('div');
     container.className = 'relative inline-block w-full';
 
@@ -79,13 +93,66 @@
     `;
     dropdown.style.display = 'none';
 
-    const selectedOptions = [];
+    const dropdownContainer = document.createElement('div');
+    dropdownContainer.className = `flex flex-col gap-2 px-2`;
+    dropdown.appendChild(dropdownContainer);
 
+    const searchInputContainer = document.createElement('div');
+    searchInputContainer.className = 'p-2';
+    dropdown.insertBefore(searchInputContainer, dropdown.firstChild);
+    searchInputContainer.style.display = enableSearch ? 'block' : 'none';
+
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.placeholder = 'Search...';
+    searchInput.className = `
+      w-full px-4 py-2 border-b border-gray-700 sticky top-0
+      ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}
+    `;
+    searchInputContainer.appendChild(searchInput);
+
+    const selectedOptions = [];
+    let currentFocus = -1;
+
+    function filterOptions() {
+      const filter = searchInput.value.toLowerCase();
+      const items = dropdown.getElementsByClassName('dropdown-item');
+      Array.from(items).forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(filter) ? '' : 'none';
+        const optionLabel = item.querySelector('.option-label');
+        const optionSublabel = item.querySelector('.option-sublabel');
+        if (optionLabel) {
+          optionLabel.innerHTML = highlightKeywords(optionLabel.textContent, filter);
+        }
+        if (optionSublabel) {
+          optionSublabel.innerHTML = highlightKeywords(optionSublabel.textContent, filter);
+        }
+      });
+      currentFocus = -1; // reset focus
+    }
+
+    function addActive(items) {
+      if (!items) return false;
+      removeActive(items);
+      if (currentFocus >= items.length) currentFocus = 0;
+      if (currentFocus < 0) currentFocus = items.length - 1;
+      items[currentFocus].classList.add('bg-gray-700');
+    }
+
+    function removeActive(items) {
+      Array.from(items).forEach(item => {
+        item.classList.remove('bg-gray-700');
+      });
+    }
+
+    let tempOption
     options.forEach(option => {
       const optionElement = document.createElement('div');
       optionElement.className = `
-        px-4 py-2 flex justify-between items-center
-        ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-700'}
+        px-4 py-2 flex justify-between items-center dropdown-item rounded
+        border-l-4 pl-2 border-primary
+        ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}
         ${option.disabled ? 'cursor-not-allowed opacity-30' : 'cursor-pointer'}
       `;
 
@@ -125,19 +192,40 @@
             if (onChange) onChange(option.value);
 
             // 清除所有選項的高亮
-            Array.from(dropdown.children).forEach(child => {
+            Array.from(dropdown.getElementsByClassName('dropdown-item')).forEach(child => {
               child.classList.remove('bg-gray-700');
             });
             optionElement.classList.add('bg-gray-700');
           }
         }
       });
-      dropdown.appendChild(optionElement);
+      dropdownContainer.appendChild(optionElement);
     });
 
     button.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+      if (enableSearch) {
+        searchInput.focus();
+      }
+    });
+
+    searchInput.addEventListener('input', filterOptions);
+
+    searchInput.addEventListener('keydown', (e) => {
+      const items = Array.from(dropdown.getElementsByClassName('dropdown-item')).filter(item => item.style.display !== 'none');
+      if (e.key === 'ArrowDown') {
+        currentFocus++;
+        addActive(items);
+      } else if (e.key === 'ArrowUp') {
+        currentFocus--;
+        addActive(items);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentFocus > -1) {
+          if (items[currentFocus]) items[currentFocus].click();
+        }
+      }
     });
 
     document.addEventListener('click', () => {
@@ -145,6 +233,7 @@
     });
 
     container.appendChild(button);
+    dropdown.insertBefore(searchInputContainer, dropdown.firstChild);
     container.appendChild(dropdown);
 
     return { container, selectedOptions };
@@ -167,5 +256,6 @@
 
   global.TailwindHeadless = {
     appendDropdown,
+    updateButtonContent,
   };
 })(window);

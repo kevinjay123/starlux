@@ -1,6 +1,7 @@
 const inputMonth = document.getElementById('inputMonth');
 const selectAirportFrom = document.getElementById('selectAirportFrom');
 const selectAirportTo = document.getElementById('selectAirportTo');
+const btnReverse = document.getElementById('btnReverse');
 const btnSearch = document.getElementById('btnSearch');
 const btnMonthPrev = document.getElementById('btnMonthPrev');
 const btnMonthNext = document.getElementById('btnMonthNext');
@@ -10,20 +11,23 @@ const containerMonthPrice = document.getElementById('containerMonthPrice');
 const containerStatistics = document.getElementById('containerStatistics');
 const loaderContainer = document.getElementById('loaderContainer');
 
+const options = airports.map(airport => {
+  return {
+    value: airport.code,
+    label: airport.name,
+    sublabel: `${airport.location}, ${airport.region}`,
+    badge: `${airport.code}`,
+    disabled: airport.disabled
+  };
+});
+
 function appendAirport(){
-  const options = airports.map(airport => {
-    return {
-      value: airport.code,
-      label: airport.name,
-      sublabel: `${airport.location}, ${airport.region}`,
-      badge: `${airport.code}`
-    };
-  });
 
   TailwindHeadless.appendDropdown(selectAirportFrom, {
     options: options,
     darkMode: true,
     multiple: false,
+    enableSearch: true,
     preselected: ['TPE'],
     onChange: (value) => {
       console.log('Selected value:', value);
@@ -34,12 +38,43 @@ function appendAirport(){
     options: options,
     darkMode: true,
     multiple: false,
+    enableSearch: true,
     preselected: ['KMJ'],
     onChange: (value) => {
       console.log('Selected value:', value);
     }
   });
 }
+
+btnReverse.addEventListener('click', () => {
+  // 取得目前選中的值
+  const fromValue = selectAirportFrom.getAttribute('data-selected-value');
+  const toValue = selectAirportTo.getAttribute('data-selected-value');
+
+  // 重新渲染下拉選單
+  selectAirportFrom.innerHTML = '';
+  selectAirportTo.innerHTML = '';
+  TailwindHeadless.appendDropdown(selectAirportFrom, {
+    options: options,
+    darkMode: true,
+    multiple: false,
+    enableSearch: true,
+    preselected: [toValue],
+    onChange: (value) => {
+      console.log('Selected value:', value);
+    }
+  });
+  TailwindHeadless.appendDropdown(selectAirportTo, {
+    options: options,
+    darkMode: true,
+    multiple: false,
+    enableSearch: true,
+    preselected: [fromValue],
+    onChange: (value) => {
+      console.log('Selected value:', value);
+    }
+  });
+});
 
 btnSearch.addEventListener('click', () => {
   const inputMonthValue = inputMonth.value;
@@ -78,8 +113,21 @@ btnMonthNext.addEventListener('click', () => {
 
 function formatMonthDate(monthValue) {
   // 使用 Date 物件來處理日期
-  const [year, month] = monthValue.split('-');
-  const date = new Date(year, month - 1, 1); // 將日期設為下個月的第一天
+  const [year, month] = monthValue.split('-').map(Number);
+  // 取得現在的日期
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1; // getMonth() 取得的月份是 0-11，所以需要 +1
+  const currentDay = now.getDate();
+
+  // 判斷是否為現在的月份
+  let day;
+  if (year === currentYear && month === currentMonth) {
+    day = currentDay;
+  } else {
+    day = 1;
+  }
+  const date = new Date(year, month - 1, day); // 將日期設為下個月的第一天
   date.setDate(date.getDate() + 1); // 將日期減去一天，獲得當月的最後一天
   return date.toISOString().split('T')[0]; // 返回 yyyy-MM-dd 格式
 }
@@ -201,7 +249,7 @@ function renderFlightInfo(data) {
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // Check if it's Saturday or Sunday
       (lowPrice) && div.classList.remove('border-gray-600');
       (lowPrice) && div.classList.add('fire', 'border-primary', 'border-2', 'border-l-8');
-      (!available) && div.classList.add('opacity-50');
+      (!available) && div.classList.add('opacity-30', 'cursor-not-allowed', 'select-none');
       div.innerHTML = `
         <div class="absolute top-0 right-0 p-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 fill-primary ${lowPrice ? 'block' : 'hidden'}">
@@ -217,7 +265,8 @@ function renderFlightInfo(data) {
               ${calendar?.price?.amount}
             </div>
             <div class="text-sm text-gray-500">${calendar?.price?.currencyCode}</div>`
-            : `<div class="text-base leading-6 text-gray-500">Unavailable</div>`
+            :
+            `<div class="text-base leading-6 italic text-gray-500">Unavailable</div>`
           }
         </div>
       `;
