@@ -10,6 +10,8 @@ const containerResult = document.getElementById('containerResult');
 const containerMonthPrice = document.getElementById('containerMonthPrice');
 const containerStatistics = document.getElementById('containerStatistics');
 const loaderContainer = document.getElementById('loaderContainer');
+const containerClass = document.getElementById('containerClass');
+const containerBankDiscount = document.getElementById('containerBankDiscount');
 
 const options = airports.map(airport => {
   return {
@@ -22,7 +24,6 @@ const options = airports.map(airport => {
 });
 
 function appendAirport(){
-
   TailwindHeadless.appendDropdown(selectAirportFrom, {
     options: options,
     darkMode: true,
@@ -45,6 +46,28 @@ function appendAirport(){
     }
   });
 }
+
+containerClass.querySelectorAll('button').forEach(button => {
+  button.addEventListener('click', () => {
+    containerClass.querySelectorAll('button').forEach(btn => {
+      btn.classList.remove('bg-primary', 'text-gray-800');
+      btn.classList.add('bg-gray-600', 'text-white');
+    });
+    button.classList.remove('bg-gray-600', 'text-white');
+    button.classList.add('bg-primary', 'text-gray-800');
+  });
+});
+
+containerBankDiscount.querySelectorAll('button').forEach(button => {
+  button.addEventListener('click', () => {
+    containerBankDiscount.querySelectorAll('button').forEach(btn => {
+      btn.classList.remove('bg-primary', 'text-gray-800');
+      btn.classList.add('bg-gray-600', 'text-white');
+    });
+    button.classList.remove('bg-gray-600', 'text-white');
+    button.classList.add('bg-primary', 'text-gray-800');
+  });
+});
 
 btnReverse.addEventListener('click', () => {
   // 取得目前選中的值

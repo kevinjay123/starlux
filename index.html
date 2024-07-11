@@ -52,12 +52,8 @@
         <div id="selectAirportTo" class="w-full"></div>
       </div>
       <div class="flex flex-col sm:flex-row items-center justify-between">
-        <label class="text-sm font-medium text-gray-300">Search the price for all months:</label>
-        <button id="btnSearch" class="bg-secondary text-white px-4 py-2 rounded mt-2 sm:mt-0 sm:ml-2">Search</button>
-      </div>
-      <div class="flex flex-col sm:flex-row items-center justify-between">
         <label class="text-sm font-medium text-gray-300 whitespace-nowrap	">Class:</label>
-        <div id="selectClass" class="w-full flex gap-2 justify-end">
+        <div id="containerClass" class="w-full flex gap-2 justify-end">
           <button class="ml-2 px-2 py-1 rounded-full text-xs bg-gray-600 text-white">Economy</button>
           <button class="ml-2 px-2 py-1 rounded-full text-xs bg-gray-600 text-white">Premium Economy</button>
           <button class="ml-2 px-2 py-1 rounded-full text-xs bg-gray-600 text-white">Business</button>
@@ -66,13 +62,17 @@
       </div>
       <div class="flex flex-col sm:flex-row items-center justify-between">
         <label class="text-sm font-medium text-gray-300 whitespace-nowrap	">Bank Discount:</label>
-        <div id="selectBankDiscount" class="w-full flex gap-2 justify-end">
+        <div id="containerBankDiscount" class="w-full flex gap-2 justify-end">
           <button class="ml-2 px-2 py-1 rounded-full text-xs bg-gray-600 text-white">None</button>
           <button class="ml-2 px-2 py-1 rounded-full text-xs bg-gray-600 text-white">World Elite_10% off</button>
           <button class="ml-2 px-2 py-1 rounded-full text-xs bg-gray-600 text-white">World_10% off</button>
           <button class="ml-2 px-2 py-1 rounded-full text-xs bg-gray-600 text-white">Titanium business_5% off</button>
           <button class="ml-2 px-2 py-1 rounded-full text-xs bg-gray-600 text-white">Titanium_5% off</button>
         </div>
+      </div>
+      <div class="flex flex-col sm:flex-row items-center justify-between">
+        <label class="text-sm font-medium text-gray-300">Search the price for all months:</label>
+        <button id="btnSearch" class="bg-secondary text-white px-4 py-2 rounded mt-2 sm:mt-0 sm:ml-2">Search</button>
       </div>
     </div>
     <div id="containerResult" class="relative flex flex-col gap-2 min-h-96 hidden">
