@@ -55,6 +55,8 @@ containerClass.querySelectorAll('button').forEach(button => {
     });
     button.classList.remove('bg-gray-600', 'text-white');
     button.classList.add('bg-primary', 'text-gray-800');
+
+    containerClass.attributes['data-selected-value'] = button.attributes['data-value'].value;
   });
 });
 
@@ -66,6 +68,8 @@ containerBankDiscount.querySelectorAll('button').forEach(button => {
     });
     button.classList.remove('bg-gray-600', 'text-white');
     button.classList.add('bg-primary', 'text-gray-800');
+
+    containerBankDiscount.attributes['data-selected-value'] = button.attributes['data-value'].value;
   });
 });
 
