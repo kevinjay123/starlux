@@ -55,8 +55,8 @@ containerClass.querySelectorAll('button').forEach(button => {
     });
     button.classList.remove('bg-gray-600', 'text-white');
     button.classList.add('bg-primary', 'text-gray-800');
-
-    containerClass.attributes['data-selected-value'] = button.attributes['data-value'].value;
+    
+    containerClass.setAttribute('data-selected-value', button.attributes['data-value'].value);
   });
 });
 
@@ -69,7 +69,7 @@ containerBankDiscount.querySelectorAll('button').forEach(button => {
     button.classList.remove('bg-gray-600', 'text-white');
     button.classList.add('bg-primary', 'text-gray-800');
 
-    containerBankDiscount.attributes['data-selected-value'] = button.attributes['data-value'].value;
+    containerBankDiscount.setAttribute('data-selected-value', button.attributes['data-value'].value);
   });
 });
 
@@ -172,7 +172,7 @@ function hideLoader() {
 function searchFlight(departure, arrival, departureDate) {
   const url = 'https://cors-anywhere.herokuapp.com/https://ecapi.starlux-airlines.com/searchFlight/v2/flights/calendars/monthly';
   const data = {
-    cabin: 'eco',
+    cabin: containerClass.attributes['data-selected-value'].value,
     itineraries: [
       {
         departure,
@@ -186,7 +186,7 @@ function searchFlight(departure, arrival, departureDate) {
       inf: 0
     },
     goFareFamilyCode: null,
-    corporateCode: 'COBRAND01'
+    corporateCode: containerBankDiscount.attributes['data-selected-value'].value
   };
 
   console.log('url', url);
@@ -229,7 +229,7 @@ function renderFlightInfo(data) {
   const calendars = data.data.calendars;
 
   // 生成空的日期格子
-  let daysArray = Array(42).fill(null);  // 6週 * 7天 = 42個格子
+  let daysArray = Array(35).fill(null);  // 6週 * 7天 = 42個格子
   let prices = [];
 
   calendars.forEach(calendar => {
