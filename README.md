@@ -57,15 +57,6 @@ Below is an example of how to use the application:
 4. Use the "Prev" and "Next" buttons to navigate between months.
 5. View the flight prices displayed in the calendar and the statistical information below.
 
-## Contributing
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Make your changes.
-4. Commit your changes (`git commit -m 'Add some feature'`).
-5. Push to the branch (`git push origin feature-branch`).
-6. Open a pull request.
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
