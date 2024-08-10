@@ -227,6 +227,8 @@ function searchFlight(departure, arrival, departureDate) {
 
 function renderFlightInfo(data) {
   const calendars = data.data.calendars;
+  const departure = selectAirportFrom.getAttribute('data-selected-value');
+  const arrival = selectAirportTo.getAttribute('data-selected-value');
 
   // 生成空的日期格子
   let daysArray = Array(35).fill(null);  // 6週 * 7天 = 42個格子
@@ -274,6 +276,10 @@ function renderFlightInfo(data) {
       const available = calendar.status === 'available';
       const priceColor = lowPrice ? 'text-green-500 font-bold ' : calendar?.price?.amount >= maxPrice ? 'text-red-400' : 'text-gray-300';
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // Check if it's Saturday or Sunday
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 將月份格式化為兩位數
+      const day = String(dayOfMonth).padStart(2, '0'); // 將月份格式化為兩位數
+      const day5 = String(dayOfMonth+5).padStart(2, '0'); // 將月份格式化為兩位數
+
       (lowPrice) && div.classList.remove('border-gray-600');
       (lowPrice) && div.classList.add('fire', 'border-primary', 'border-2', 'border-l-8');
       (!available) && div.classList.add('opacity-30', 'cursor-not-allowed', 'select-none');
@@ -295,6 +301,9 @@ function renderFlightInfo(data) {
             :
             `<div class="text-base leading-6 italic text-gray-500">Unavailable</div>`
           }
+        </div>
+        <div>
+          <a href="https://www.starlux-airlines.com/zh-TW/booking/everymundo?ondCityCode[0].origin=${departure}&ondCityCode[0].destination=${arrival}&ondCityCode[0].day=${day}&ondCityCode[0].month=${month}/${date.getFullYear()}&numAdults=1&numChildren=0&numInfant=0&cabinClassCode=Y&tripType=R&ondCityCode[1].month=${month}/${date.getFullYear()}&ondCityCode[1].day=${day5}" target="_blank" class="text-sm text-gray-400 underline">Book Now</a>
         </div>
       `;
     } else {
