@@ -265,7 +265,7 @@ function renderFlightInfo(data) {
 
   daysArray.forEach((calendar, index) => {
     const div = document.createElement('div');
-    div.classList.add('border', 'border-gray-600', 'p-2', 'h-24', 'relative', 'flex', 'flex-col', 'justify-center', 'items-center', 'bg-gray-900', 'text-white', 'shadow', 'rounded');
+    div.classList.add('border', 'border-gray-600', 'p-2', 'min-h-24', 'relative', 'flex', 'flex-col', 'justify-center', 'items-center', 'bg-gray-900', 'text-white', 'shadow', 'rounded');
 
     if (calendar) {
       const date = new Date(calendar.departureDate);
