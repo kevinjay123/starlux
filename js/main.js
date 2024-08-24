@@ -302,9 +302,10 @@ function renderFlightInfo(data) {
             `<div class="text-base leading-6 italic text-gray-500">Unavailable</div>`
           }
         </div>
+        ${available ? `
         <div>
           <a href="https://www.starlux-airlines.com/zh-TW/booking/everymundo?ondCityCode[0].origin=${departure}&ondCityCode[0].destination=${arrival}&ondCityCode[0].day=${day}&ondCityCode[0].month=${month}/${date.getFullYear()}&numAdults=1&numChildren=0&numInfant=0&cabinClassCode=Y&tripType=R&ondCityCode[1].month=${month}/${date.getFullYear()}&ondCityCode[1].day=${day5}" target="_blank" class="text-sm text-gray-400 underline">Book Now</a>
-        </div>
+        </div>` : ''}
       `;
     } else {
       div.classList.add('invisible', 'hidden', 'lg:block');
