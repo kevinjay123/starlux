@@ -12,6 +12,7 @@ const containerStatistics = document.getElementById('containerStatistics');
 const loaderContainer = document.getElementById('loaderContainer');
 const containerClass = document.getElementById('containerClass');
 const containerBankDiscount = document.getElementById('containerBankDiscount');
+const modalCORS = document.getElementById('modalCORS');
 
 const options = airports.map(airport => {
   return {
@@ -138,6 +139,10 @@ btnMonthNext.addEventListener('click', () => {
   updateInputMonthValue(1);
 });
 
+modalCORS.addEventListener('click', () => {
+  modalCORS.classList.add('hidden');
+});
+
 function formatMonthDate(monthValue) {
   // 使用 Date 物件來處理日期
   const [year, month] = monthValue.split('-').map(Number);
@@ -171,6 +176,12 @@ function hideLoader() {
 
 function searchFlight(departure, arrival, departureDate) {
   const url = 'https://cors-anywhere.herokuapp.com/https://ecapi.starlux-airlines.com/searchFlight/v2/flights/calendars/monthly';
+
+  // returnDate = departureDate + 5 days
+  const returnDateObj = new Date(departureDate);
+  returnDateObj.setDate(returnDateObj.getDate() + 5);
+  const returnDate = returnDateObj.toISOString().split('T')[0];
+
   const data = {
     cabin: containerClass.attributes['data-selected-value'].value,
     itineraries: [
@@ -178,6 +189,11 @@ function searchFlight(departure, arrival, departureDate) {
         departure,
         arrival,
         departureDate
+      },
+      {
+        departureDate: returnDate,
+        departure: arrival,
+        arrival: departure
       }
     ],
     travelers: {
@@ -220,6 +236,7 @@ function searchFlight(departure, arrival, departureDate) {
       // 若是 https://cors-anywhere.herokuapp.com/corsdemo 錯誤，提示需要到 https://cors-anywhere.herokuapp.com/corsdemo 啟用
       if (error.message.includes('See /cors')) {
         logError('請到 https://cors-anywhere.herokuapp.com/corsdemo 啟用 CORS');
+        modalCORS.classList.remove('hidden');
       }
       hideLoader();
     });
@@ -340,5 +357,11 @@ function renderFlightInfo(data) {
 // 添加事件監聽器
 document.addEventListener("DOMContentLoaded", function() {
   appendAirport();
+  // update inputMonth for now
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 2).padStart(2, '0');
+  inputMonth.value = `${year}-${month}`;
+  modalCORS.classList.remove('hidden');
   // renderFlightInfo(monthly); // for testing
 });
