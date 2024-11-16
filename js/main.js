@@ -208,6 +208,19 @@ function searchFlight(departure, arrival, departureDate) {
   console.log('url', url);
   console.log('data', data);
 
+  // 更新網址參數
+  const searchParams = new URLSearchParams({
+    departure,
+    arrival,
+    departureDate,
+    returnDate,
+    cabin: data.cabin,
+    corporateCode: data.corporateCode,
+  });
+
+  const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+  window.history.pushState({ path: newUrl }, '', newUrl);
+
   // 清空行事曆並顯示 loading 動畫
   // containerMonthPrice.innerHTML = '';
   // containerStatistics.innerHTML = '';
@@ -354,6 +367,66 @@ function renderFlightInfo(data) {
 
 }
 
+function urlParamsHandler() {
+  // 檢查 URL 參數
+  const urlParams = new URLSearchParams(window.location.search);
+  const departure = urlParams.get('departure');
+  const arrival = urlParams.get('arrival');
+  const departureDate = urlParams.get('departureDate');
+  const cabin = urlParams.get('cabin');
+  const corporateCode = urlParams.get('corporateCode');
+
+  if (departure && arrival && departureDate) {
+    // 設定機場下拉選單
+    // 重新渲染下拉選單
+    selectAirportFrom.innerHTML = '';
+    selectAirportTo.innerHTML = '';
+    TailwindHeadless.appendDropdown(selectAirportFrom, {
+      options: options,
+      darkMode: true,
+      multiple: false,
+      enableSearch: true,
+      preselected: [departure],
+      onChange: (value) => {
+        console.log('Selected value:', value);
+      }
+    });
+    TailwindHeadless.appendDropdown(selectAirportTo, {
+      options: options,
+      darkMode: true,
+      multiple: false,
+      enableSearch: true,
+      preselected: [arrival],
+      onChange: (value) => {
+        console.log('Selected value:', value);
+      }
+    });
+
+    // 設定艙等（如果有）
+    if (cabin) {
+      const cabinButton = containerClass.querySelector(`button[data-value="${cabin}"]`);
+      if (cabinButton) {
+        cabinButton.click();
+      }
+    }
+
+    // 設定企業代碼折扣（如果有）
+    if (corporateCode) {
+      const discountButton = containerBankDiscount.querySelector(`button[data-value="${corporateCode}"]`);
+      if (discountButton) {
+        discountButton.click();
+      }
+    }
+
+    // 更新 inputMonth 的值
+    inputMonth.value = departureDate.slice(0, 7);
+    spanMonth.textContent = inputMonth.value;
+
+    // 自動呼叫 searchFlight 函式
+    searchFlight(departure, arrival, departureDate);
+  }
+}
+
 // 添加事件監聽器
 document.addEventListener("DOMContentLoaded", function() {
   appendAirport();
@@ -362,6 +435,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const year = now.getFullYear();
   const month = String(now.getMonth() + 2).padStart(2, '0');
   inputMonth.value = `${year}-${month}`;
-  modalCORS.classList.remove('hidden');
   // renderFlightInfo(monthly); // for testing
+
+  urlParamsHandler();
 });
