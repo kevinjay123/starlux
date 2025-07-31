@@ -1,3 +1,9 @@
+> [!NOTE]  
+> The project was forked from [houbird/starlux](https://github.com/houbird/starlux)
+>
+> Fix API error and set TWD currency as default
+>
+
 # Starlux
 
 This project is a simple web application that allows users to select a year and month, specify departure and destination airports, and search for Starlux flight prices. It leverages Tailwind CSS for styling and provides a user-friendly interface.
