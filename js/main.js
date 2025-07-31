@@ -240,7 +240,11 @@ function updateInputMonthValue(offset) {
 
   spanMonth.textContent = inputMonth.value;
 
-  searchFlight(departure, arrival, formatMonthDate(inputMonth.value));
+  if (departure != "TPE" && departure != "RMQ") { 
+    startSearchFlow(arrival, departure, formatMonthDate(inputMonth.value));
+  } else {
+    searchFlight(departure, arrival, formatMonthDate(inputMonth.value));
+  }
 }
 
 btnMonthPrev.addEventListener('click', () => {
