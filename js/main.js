@@ -212,8 +212,21 @@ btnSearch.addEventListener('click', () => {
   spanMonth.textContent = inputMonthValue;
 
   // 呼叫 searchFlight 函式，並傳入 departure, arrival, departureDate 參數
-  searchFlight(departure, arrival, departureDate);
+  if (departure != "TPE" && departure != "RMQ") { 
+    startSearchFlow(arrival, departure, departureDate);
+  } else {
+    searchFlight(departure, arrival, departureDate, null);
+  }
 });
+
+async function startSearchFlow(departure, arrival, departureDate) {
+  const code = await getGoFareFamilyCode(departure, arrival, departureDate);
+  if (code) {
+    searchFlight(departure, arrival, departureDate, code);
+  } else {
+    console.error('無法取得 fareFamilyCode');
+  }
+}
 
 function updateInputMonthValue(offset) {
   const inputMonthValue = inputMonth.value;
@@ -273,10 +286,9 @@ function hideLoader() {
   loaderContainer.classList.add('hidden');
 }
 
-function searchFlight(departure, arrival, departureDate) {
-  const url = 'https://cors-anywhere.herokuapp.com/https://ecapi.starlux-airlines.com/searchFlight/v2/flights/calendars/monthly';
+function getGoFareFamilyCode(departure, arrival, departureDate) {
+  const url = 'https://cors-anywhere.herokuapp.com/https://ecapi.starlux-airlines.com/searchFlight/v2/flights/search';
 
-  // returnDate = departureDate + 5 days
   const returnDateObj = new Date(departureDate);
   returnDateObj.setDate(returnDateObj.getDate() + 5);
   const returnDate = returnDateObj.toISOString().split('T')[0];
@@ -287,12 +299,12 @@ function searchFlight(departure, arrival, departureDate) {
       {
         departure,
         arrival,
-        departureDate
+        departureDate: departureDate
       },
       {
-        departureDate: returnDate,
         departure: arrival,
-        arrival: departure
+        arrival: departure,
+        departureDate: returnDate,
       }
     ],
     travelers: {
@@ -300,8 +312,6 @@ function searchFlight(departure, arrival, departureDate) {
       chd: 0,
       inf: 0
     },
-    goFareFamilyCode: null,
-    corporateCode: containerBankDiscount.attributes['data-selected-value'].value
   };
 
   console.log('url', url);
@@ -314,7 +324,82 @@ function searchFlight(departure, arrival, departureDate) {
     departureDate,
     returnDate,
     cabin: data.cabin,
-    corporateCode: data.corporateCode,
+  });
+
+  const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+  window.history.pushState({ path: newUrl }, '', newUrl);
+
+  // 清空行事曆並顯示 loading 動畫
+  showLoader();
+  containerResult.classList.remove('hidden');
+
+  // 返回 Promise，確保可以 await
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'jx-lang': 'zh-TW',
+    },
+    body: JSON.stringify(data)
+  })
+    .then(response => response.json())
+    .then(data => {
+      const code = parseCode(data);
+      hideLoader();
+      return code; // 確保返回 code
+    })
+    .catch(error => {
+      console.error('無法取得航班資訊:', error);
+      console.log(error);
+
+      if (error.message.includes('See /cors')) {
+        logError('請到 https://cors-anywhere.herokuapp.com/corsdemo 啟用 CORS');
+        modalCORS.classList.remove('hidden');
+      }
+      hideLoader();
+      throw error; // 拋出錯誤以便上層處理
+    });
+}
+
+function searchFlight(departure, arrival, departureDate, goFareFamilyCode) {
+  const url = 'https://cors-anywhere.herokuapp.com/https://ecapi.starlux-airlines.com/searchFlight/v2/flights/calendars/monthly';
+
+  const returnDateObj = new Date(departureDate);
+  returnDateObj.setDate(returnDateObj.getDate() + 5);
+  const returnDate = returnDateObj.toISOString().split('T')[0];
+
+  const data = {
+    cabin: containerClass.attributes['data-selected-value'].value,
+    itineraries: [
+      {
+        departure,
+        arrival,
+        departureDate: departureDate
+      },
+      {
+        departure: arrival,
+        arrival: departure,
+        departureDate: returnDate,
+      }
+    ],
+    travelers: {
+      adt: 1,
+      chd: 0,
+      inf: 0
+    },
+    goFareFamilyCode: goFareFamilyCode,
+  };
+
+  console.log('url', url);
+  console.log('data', data);
+
+  // 更新網址參數
+  const searchParams = new URLSearchParams({
+    departure,
+    arrival,
+    departureDate,
+    returnDate,
+    cabin: data.cabin,
   });
 
   const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
@@ -345,13 +430,26 @@ function searchFlight(departure, arrival, departureDate) {
       console.error('無法取得航班資訊:', error);
       console.log(error);
 
-      // 若是 https://cors-anywhere.herokuapp.com/corsdemo 錯誤，提示需要到 https://cors-anywhere.herokuapp.com/corsdemo 啟用
       if (error.message.includes('See /cors')) {
         logError('請到 https://cors-anywhere.herokuapp.com/corsdemo 啟用 CORS');
         modalCORS.classList.remove('hidden');
       }
       hideLoader();
     });
+}
+
+function parseCode(data) {
+  const fareProducts = data.meta.fareProducts;
+
+  let product = fareProducts.filter(function(value) {
+    return value.cabin === containerClass.attributes['data-selected-value'].value;
+  });
+  
+  if (Array.isArray(product) && product.length) {
+    return product[0].fareFamilyCode;
+  } else {
+    return fareProducts[0].fareFamilyCode;
+  }
 }
 
 function renderFlightInfo(data) {
