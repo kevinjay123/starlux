@@ -57,9 +57,16 @@ const airports = [
   },
   {
     "region":"Northeast Asia",
-    "location":"Okinawa, Jaan ",
+    "location":"Okinawa, Japan ",
     "name":"Naha Airport",
     "code":"OKA",
+    "disabled": false
+  },
+  {
+    "region":"Northeast Asia",
+    "location":"Miyakojima, Japan ",
+    "name":"Shimojishima Airport",
+    "code":"SHI",
     "disabled": false
   },
   {
